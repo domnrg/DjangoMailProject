@@ -13,13 +13,13 @@ class MailingDetailView(DetailView):
 
 class MailingCreateView(CreateView):
     model = Mailing
-    fields = ['start_time', 'end_time', 'frequency', 'status', 'message', 'clients']
+    fields = ['start_time', 'end_time', 'status', 'message', 'clients']
     template_name = 'mailings/form.html'
     success_url = reverse_lazy('mailing_list')
 
 class MailingUpdateView(UpdateView):
     model = Mailing
-    fields = ['start_time', 'end_time', 'frequency', 'status', 'message', 'clients']
+    fields = ['start_time', 'end_time', 'status', 'message', 'clients']
     template_name = 'mailings/form.html'
     success_url = reverse_lazy('mailing_list')
 

@@ -1,0 +1,36 @@
+{% extends 'mailings/base.html' %}
+{% block title %}Список рассылок{% endblock %}
+{% block content %}
+<h2 class="mb-4">Список рассылок</h2>
+<a class="btn btn-success mb-3" href="{% url 'mailings:mailing_create' %}">Создать новую рассылку</a>
+
+{% if object_list %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Тема</th>
+            <th>Получатели</th>
+            <th>Периодичность</th>
+            <th>Дата начала</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for mailing in object_list %}
+        <tr>
+            <td><a href="{% url 'mailings:mailing_detail' mailing.pk %}">{{ mailing.message.subject }}</a></td>
+            <td>{{ mailing.clients_list }}</td>
+            <td>{{ mailing.periodicity }}</td>
+            <td>{{ mailing.start_time|date:"d.m.Y H:i" }}</td>
+            <td>
+                <a href="{% url 'mailings:mailing_update' mailing.pk %}" class="btn btn-sm btn-primary">Изменить</a>
+                <a href="{% url 'mailings:mailing_delete' mailing.pk %}" class="btn btn-sm btn-danger">Удалить</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Нет активных рассылок.</p>
+{% endif %}
+{% endblock %}

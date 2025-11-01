@@ -1,6 +1,11 @@
+from django.conf import settings
+from django.core.checks import messages
+from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404, redirect
+from django.utils import timezone
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from .models import Mailing, Message, Client
+from .models import Mailing, Message, Client, Attempt
 
 
 class MailingListView(ListView):
@@ -79,5 +84,36 @@ class ClientDeleteView(DeleteView):
     model = Client
     template_name = 'mailings/client_confirm_delete.html'
     success_url = reverse_lazy('client_list')
+
+
+def send_mailing_now(request, pk):
+    """Ручная отправка рассылки"""
+    mailing = get_object_or_404(Mailing, pk=pk)
+
+    for client in mailing.clients.all():
+        try:
+            send_mail(
+                subject=mailing.title,
+                message=mailing.message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[client.email],
+                fail_silently=False,
+            )
+            status = 'Успешно'
+            server_response = 'Письмо успешно отправлено'
+        except Exception as e:
+            status = 'Не успешно'
+            server_response = str(e)
+
+        Attempt.objects.create(
+            mailing=mailing,
+            attempt_time=timezone.now(),
+            status=status,
+            server_response=server_response,
+        )
+
+    messages.success(request, f'Рассылка «{mailing.title}» отправлена.')
+    return redirect('mailing_list')
+
 
 

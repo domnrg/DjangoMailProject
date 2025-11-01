@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Client, Message, Mailing
+from .models import Client, Message, Mailing, Attempt
 
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
@@ -25,4 +25,10 @@ class MailingAdmin(admin.ModelAdmin):
     def clients_list(self, obj):
         return ", ".join([client.full_name for client in obj.clients.all()])
     clients_list.short_description = 'Получатели'
+
+@admin.register(Attempt)
+class AttemptAdmin(admin.ModelAdmin):
+    list_display = ('mailing', 'attempt_time', 'status')
+    list_filter = ('status', 'attempt_time')
+
 

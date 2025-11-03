@@ -21,4 +21,5 @@ urlpatterns = [
     path('clients/create/', views.ClientCreateView.as_view(), name='client_create'),
     path('clients/<int:pk>/update/', views.ClientUpdateView.as_view(), name='client_update'),
     path('clients/<int:pk>/delete/', views.ClientDeleteView.as_view(), name='client_delete'),
+    path('mailings/send/<int:pk>/', views.send_mailing_now, name='send_mailing_now'),
 ]

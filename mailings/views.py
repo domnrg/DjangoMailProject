@@ -12,6 +12,13 @@ class MailingListView(ListView):
     model = Mailing
     template_name = 'mailings/mailing_list.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total_mailings'] = Mailing.objects.count()
+        context['active_mailings'] = Mailing.objects.filter(status='Запущена').count()
+        context['unique_recipients'] = Client.objects.distinct().count()
+        return context
+
 class MailingDetailView(DetailView):
     model = Mailing
     template_name = 'mailings/mailing_detail.html'
@@ -20,18 +27,18 @@ class MailingCreateView(CreateView):
     model = Mailing
     fields = ['start_time', 'end_time', 'status', 'message', 'clients']
     template_name = 'mailings/form.html'
-    success_url = reverse_lazy('mailing_list')
+    success_url = reverse_lazy('mailings:mailing_list')
 
 class MailingUpdateView(UpdateView):
     model = Mailing
     fields = ['start_time', 'end_time', 'status', 'message', 'clients']
     template_name = 'mailings/form.html'
-    success_url = reverse_lazy('mailing_list')
+    success_url = reverse_lazy('mailings:mailing_list')
 
 class MailingDeleteView(DeleteView):
     model = Mailing
-    template_name = 'mailings/mailing_confirm_delete.html'
-    success_url = reverse_lazy('mailing_list')
+    template_name = 'mailings/confirm_delete.html'
+    success_url = reverse_lazy('mailings:mailing_list')
 
 
 class MessageListView(ListView):
@@ -46,23 +53,24 @@ class MessageCreateView(CreateView):
     model = Message
     fields = ['subject', 'body']
     template_name = 'mailings/form.html'
-    success_url = reverse_lazy('message_list')
+    success_url = reverse_lazy('mailings:message_list')
 
 class MessageUpdateView(UpdateView):
     model = Message
     fields = ['subject', 'body']
     template_name = 'mailings/form.html'
-    success_url = reverse_lazy('message_list')
+    success_url = reverse_lazy('mailings:message_list')
 
 class MessageDeleteView(DeleteView):
     model = Message
-    template_name = 'mailings/message_confirm_delete.html'
-    success_url = reverse_lazy('message_list')
+    template_name = 'mailings/confirm_delete.html'
+    success_url = reverse_lazy('mailings:message_list')
 
 
 class ClientListView(ListView):
     model = Client
     template_name = 'mailings/client_list.html'
+    context_object_name = 'clients'
 
 class ClientDetailView(DetailView):
     model = Client
@@ -72,18 +80,18 @@ class ClientCreateView(CreateView):
     model = Client
     fields = ['email', 'full_name', 'comment']
     template_name = 'mailings/form.html'
-    success_url = reverse_lazy('client_list')
+    success_url = reverse_lazy('mailings:client_list')
 
 class ClientUpdateView(UpdateView):
     model = Client
     fields = ['email', 'full_name', 'comment']
     template_name = 'mailings/form.html'
-    success_url = reverse_lazy('client_list')
+    success_url = reverse_lazy('mailings:client_list')
 
 class ClientDeleteView(DeleteView):
     model = Client
-    template_name = 'mailings/client_confirm_delete.html'
-    success_url = reverse_lazy('client_list')
+    template_name = 'mailings/confirm_delete.html'
+    success_url = reverse_lazy('mailings:client_list')
 
 
 def send_mailing_now(request, pk):
@@ -113,7 +121,5 @@ def send_mailing_now(request, pk):
         )
 
     messages.success(request, f'Рассылка «{mailing.title}» отправлена.')
-    return redirect('mailing_list')
-
-
+    return redirect('mailings:mailing_list')
 

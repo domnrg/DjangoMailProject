@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.utils.html import format_html
+
 from .models import Client, Message, Mailing, Attempt
 
 @admin.register(Client)
@@ -17,6 +19,14 @@ class MailingAdmin(admin.ModelAdmin):
     list_display = ('id', 'status', 'start_time', 'end_time', 'message_list', 'clients_list')
     list_filter = ('status',)
     search_fields = ('message__subject',)
+
+    def send_button(self, obj):
+        return format_html(
+            '<a class="button" href="/mailings/send/{}/">Отправить</a>', obj.pk
+        )
+    send_button.short_description = 'Отправка'
+    send_button.allow_tags = True
+
 
     def message_list(self, obj):
         return obj.message.subject

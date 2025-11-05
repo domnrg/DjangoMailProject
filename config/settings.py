@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
+
+from django.urls import reverse_lazy
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -43,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mailings',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -137,21 +140,20 @@ MEDIA_URL = "/media/"
 
 MEDIA_ROOT = BASE_DIR / "media"
 
-# AUTH_USER_MODEL = "auth.User"
-#
-# LOGIN_URL = "users:login"
-#
-# LOGIN_REDIRECT_URL = "/"
-#
-# LOGOUT_REDIRECT_URL = "/"
-#
-# EMAIL_HOST = 'smtp.yandex.ru'
-# EMAIL_PORT = 465
-# EMAIL_USE_TLS = False
-# EMAIL_USE_SSL = True
-# EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-# EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+AUTH_USER_MODEL = "users.User"
+
+LOGIN_URL = "users:login"
+
+LOGIN_REDIRECT_URL = reverse_lazy('mailings:mailing_list')
+LOGOUT_REDIRECT_URL = reverse_lazy('mailings:mailing_list')
+
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 #
 # CACHE_ENABLED = True
 # if CACHE_ENABLED:

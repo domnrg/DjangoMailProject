@@ -147,6 +147,8 @@ LOGIN_URL = "users:login"
 LOGIN_REDIRECT_URL = reverse_lazy('mailings:mailing_list')
 LOGOUT_REDIRECT_URL = reverse_lazy('mailings:mailing_list')
 
+AUTHENTICATION_BACKENDS = ['users.backends.EmailBackend']
+
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
 EMAIL_USE_TLS = False

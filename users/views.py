@@ -11,10 +11,6 @@ from users.forms import UserRegisterForm, CustomAuthenticationForm
 from users.models import User
 
 
-#class UserLoginView(LoginView):
-#    template_name = 'users/login.html'
-
-
 class CustomLoginView(LoginView):
     template_name = "users/login.html"
     authentication_form = CustomAuthenticationForm

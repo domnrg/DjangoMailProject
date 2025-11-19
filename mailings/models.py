@@ -8,14 +8,14 @@ class Client(models.Model):
     email = models.EmailField(unique=True, verbose_name="Email")
     full_name = models.CharField(max_length=100, verbose_name="Ф.И.О.")
     comment = models.TextField(null=True, blank=True, verbose_name="Комментарий")
-    # owner = models.ForeignKey(
-    #     User,
-    #     on_delete=models.CASCADE,
-    #     related_name="clients",
-    #     verbose_name="Владелец",
-    #     null=True,
-    #     blank=True
-    # )
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="clients",
+        verbose_name="Владелец",
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
         return f"{self.full_name} ({self.email})"
@@ -29,14 +29,14 @@ class Message(models.Model):
     """Сообщение для рассылки"""
     subject = models.CharField(max_length=100, verbose_name="Тема письма")
     body = models.TextField(verbose_name="Текст письма")
-    # owner = models.ForeignKey(
-    #     User,
-    #     on_delete=models.CASCADE,
-    #     related_name="messages",
-    #     verbose_name="Владелец",
-    #     null=True,
-    #     blank=True
-    # )
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="messages",
+        verbose_name="Владелец",
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
         return self.subject
@@ -76,14 +76,14 @@ class Mailing(models.Model):
         verbose_name="Получатели"
     )
 
-    # owner = models.ForeignKey(
-    #     User,
-    #     on_delete=models.CASCADE,
-    #     related_name="mailings",
-    #     verbose_name="Владелец",
-    #     null=True,
-    #     blank=True
-    # )
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="mailings",
+        verbose_name="Владелец",
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
         return f"Рассылка №{self.pk} ({self.status})"
@@ -119,3 +119,14 @@ class Attempt(models.Model):
         verbose_name_plural = "Попытки рассылок"
         ordering = ['-attempt_time']
 
+
+class MailingLog(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Пользователь")
+    mailing = models.ForeignKey('Mailing', on_delete=models.CASCADE, related_name='logs')
+    timestamp = models.DateTimeField(auto_now_add=True)
+    success = models.BooleanField(default=False)
+    message_count = models.PositiveIntegerField(default=0)
+    error_message = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"Log {self.id} for {self.user}"

@@ -6,7 +6,7 @@ from mailings.models import Mailing, Attempt
 
 
 class Command(BaseCommand):
-    help = 'Отправка всех активных рассылок вручную'
+    help = "Отправка всех активных рассылок вручную"
 
     def handle(self, *args, **options):
         active_mailings = Mailing.objects.filter(is_active=True)
@@ -20,10 +20,10 @@ class Command(BaseCommand):
                         recipient_list=[client.email],
                         fail_silently=False,
                     )
-                    status = 'Успешно'
-                    server_response = 'Письмо отправлено'
+                    status = "Успешно"
+                    server_response = "Письмо отправлено"
                 except Exception as e:
-                    status = 'Не успешно'
+                    status = "Не успешно"
                     server_response = str(e)
 
                 Attempt.objects.create(
@@ -32,4 +32,4 @@ class Command(BaseCommand):
                     status=status,
                     server_response=server_response,
                 )
-        self.stdout.write(self.style.SUCCESS('Все активные рассылки отправлены'))
+        self.stdout.write(self.style.SUCCESS("Все активные рассылки отправлены"))

@@ -1,10 +1,10 @@
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.db import models
 
 
 class Client(models.Model):
     """Получатель рассылки"""
+
     email = models.EmailField(unique=True, verbose_name="Email")
     full_name = models.CharField(max_length=100, verbose_name="Ф.И.О.")
     comment = models.TextField(null=True, blank=True, verbose_name="Комментарий")
@@ -14,7 +14,7 @@ class Client(models.Model):
         related_name="clients",
         verbose_name="Владелец",
         null=True,
-        blank=True
+        blank=True,
     )
 
     def __str__(self):
@@ -27,6 +27,7 @@ class Client(models.Model):
 
 class Message(models.Model):
     """Сообщение для рассылки"""
+
     subject = models.CharField(max_length=100, verbose_name="Тема письма")
     body = models.TextField(verbose_name="Текст письма")
     owner = models.ForeignKey(
@@ -35,7 +36,7 @@ class Message(models.Model):
         related_name="messages",
         verbose_name="Владелец",
         null=True,
-        blank=True
+        blank=True,
     )
 
     def __str__(self):
@@ -48,32 +49,28 @@ class Message(models.Model):
 
 class Mailing(models.Model):
     """Рассылка"""
+
     start_time = models.DateTimeField(verbose_name="Дата и время начала отправки")
     end_time = models.DateTimeField(verbose_name="Дата и время окончания отправки")
 
     STATUS_CHOICES = [
-        ('создана', 'Создана'),
-        ('запущена', 'Запущена'),
-        ('завершена', 'Завершена'),
+        ("создана", "Создана"),
+        ("запущена", "Запущена"),
+        ("завершена", "Завершена"),
     ]
     status = models.CharField(
-        max_length=10,
-        choices=STATUS_CHOICES,
-        default='создана',
-        verbose_name="Статус"
+        max_length=10, choices=STATUS_CHOICES, default="создана", verbose_name="Статус"
     )
 
     message = models.ForeignKey(
         Message,
         on_delete=models.CASCADE,
         related_name="mailings",
-        verbose_name="Сообщение"
+        verbose_name="Сообщение",
     )
 
     clients = models.ManyToManyField(
-        Client,
-        related_name="mailings",
-        verbose_name="Получатели"
+        Client, related_name="mailings", verbose_name="Получатели"
     )
 
     owner = models.ForeignKey(
@@ -82,7 +79,7 @@ class Mailing(models.Model):
         related_name="mailings",
         verbose_name="Владелец",
         null=True,
-        blank=True
+        blank=True,
     )
 
     def __str__(self):
@@ -95,20 +92,27 @@ class Mailing(models.Model):
 
 class Attempt(models.Model):
     """Попытка отправки рассылки"""
+
     ATTEMPT_STATUS = [
-        ('Успешно', 'Успешно'),
-        ('Не успешно', 'Не успешно'),
+        ("Успешно", "Успешно"),
+        ("Не успешно", "Не успешно"),
     ]
 
-    attempt_time = models.DateTimeField(auto_now_add=True, verbose_name="Дата и время попытки")
-    status = models.CharField(max_length=20, choices=ATTEMPT_STATUS, verbose_name="Статус")
-    server_response = models.TextField(verbose_name="Ответ почтового сервера", blank=True, null=True)
+    attempt_time = models.DateTimeField(
+        auto_now_add=True, verbose_name="Дата и время попытки"
+    )
+    status = models.CharField(
+        max_length=20, choices=ATTEMPT_STATUS, verbose_name="Статус"
+    )
+    server_response = models.TextField(
+        verbose_name="Ответ почтового сервера", blank=True, null=True
+    )
 
     mailing = models.ForeignKey(
-        'Mailing',
+        "Mailing",
         on_delete=models.CASCADE,
-        related_name='attempts',
-        verbose_name="Рассылка"
+        related_name="attempts",
+        verbose_name="Рассылка",
     )
 
     def __str__(self):
@@ -117,12 +121,16 @@ class Attempt(models.Model):
     class Meta:
         verbose_name = "Попытка рассылки"
         verbose_name_plural = "Попытки рассылок"
-        ordering = ['-attempt_time']
+        ordering = ["-attempt_time"]
 
 
 class MailingLog(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Пользователь")
-    mailing = models.ForeignKey('Mailing', on_delete=models.CASCADE, related_name='logs')
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Пользователь"
+    )
+    mailing = models.ForeignKey(
+        "Mailing", on_delete=models.CASCADE, related_name="logs"
+    )
     timestamp = models.DateTimeField(auto_now_add=True)
     success = models.BooleanField(default=False)
     message_count = models.PositiveIntegerField(default=0)

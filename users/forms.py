@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.contrib.auth import authenticate
 
@@ -8,7 +8,7 @@ from users.models import User
 class UserRegisterForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ['email', 'phone', 'avatar', 'country', 'password1', 'password2']
+        fields = ["email", "phone", "avatar", "country", "password1", "password2"]
 
 
 class CustomAuthenticationForm(forms.Form):
@@ -38,10 +38,3 @@ class CustomAuthenticationForm(forms.Form):
 
     def get_user(self):
         return self.user
-
-
-
-
-
-
-

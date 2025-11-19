@@ -3,7 +3,6 @@ from django.core.management import BaseCommand
 from users.models import User
 
 
-
 class Command(BaseCommand):
     help = "Создать суперпользователя"
 
@@ -23,5 +22,3 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("Superuser created"))
         else:
             self.stdout.write(self.style.WARNING("Superuser already exists"))
-
-

@@ -4,7 +4,7 @@ from django.urls import path
 
 from mailings.views import user_stats
 from users.apps import UsersConfig
-from users.views import UsersCreateView, email_verification, CustomLoginView
+from users.views import UsersCreateView, email_verification, CustomLoginView, UserDetailView, UserUpdateView
 
 app_name = UsersConfig.name
 
@@ -14,6 +14,9 @@ urlpatterns = [
     path("register/", UsersCreateView.as_view(), name="register"),
     path("email_confirm/<str:token>/", email_verification, name="email_confirm"),
     path("stats/", user_stats, name="user_stats"),
+    path('profile/', UserDetailView.as_view(), name='profile'),
+    path('profile/edit/', UserUpdateView.as_view(), name='profile_edit'),
+
     path(
         "password_reset/",
         auth_views.PasswordResetView.as_view(

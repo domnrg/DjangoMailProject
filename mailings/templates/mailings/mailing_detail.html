@@ -8,5 +8,10 @@
 <p><strong>Дата рассылки:</strong> {{ object.sending_time }}</p>
 <p><strong>Статус:</strong> {{ object.status }}</p>
 
+<form method="post" action="{% url 'mailings:send_mailing' mailing.pk %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Отправить рассылку</button>
+</form>
+
 <a href="{% url 'mailings:mailing_list' %}">Назад к списку</a>
 {% endblock %}

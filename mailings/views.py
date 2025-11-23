@@ -3,10 +3,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.checks import messages
 from django.core.mail import send_mail
+from django.core.management import call_command
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.decorators.cache import cache_page
 from django.views.generic import (
     ListView,
@@ -280,3 +282,10 @@ def user_stats(request):
         "fail_count": fail_count,
     }
     return render(request, "users/user_stats.html", context)
+
+class MailingSendView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        mailing = get_object_or_404(Mailing, pk=pk, owner=request.user)
+
+        call_command('sending_mail')
+        return redirect('mailings:mailing_list')

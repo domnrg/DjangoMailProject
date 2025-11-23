@@ -9,13 +9,20 @@ class Command(BaseCommand):
     help = "Отправка всех активных рассылок вручную"
 
     def handle(self, *args, **options):
-        active_mailings = Mailing.objects.filter(is_active=True)
+        active_mailings = Mailing.objects.filter(status="запущена")
+
+        if not active_mailings.exists():
+            self.stdout.write(self.style.WARNING("Нет активных рассылок для отправки."))
+            return
+
         for mailing in active_mailings:
+            message = mailing.message
+
             for client in mailing.clients.all():
                 try:
                     send_mail(
-                        subject=mailing.title,
-                        message=mailing.message,
+                        subject=message.subject,
+                        message=message.body,
                         from_email=settings.DEFAULT_FROM_EMAIL,
                         recipient_list=[client.email],
                         fail_silently=False,
@@ -26,10 +33,12 @@ class Command(BaseCommand):
                     status = "Не успешно"
                     server_response = str(e)
 
+                # Сохраняем попытку отправки
                 Attempt.objects.create(
                     mailing=mailing,
                     attempt_time=timezone.now(),
                     status=status,
                     server_response=server_response,
                 )
-        self.stdout.write(self.style.SUCCESS("Все активные рассылки отправлены"))
+
+        self.stdout.write(self.style.SUCCESS("Все активные рассылки обработаны."))

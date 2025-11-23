@@ -1,0 +1,12 @@
+{% extends 'mailings/base.html' %}
+
+{% block content %}
+<h2>Детали рассылки</h2>
+
+<p><strong>Тема:</strong> {{ object.title }}</p>
+<p><strong>Сообщение:</strong> {{ object.message }}</p>
+<p><strong>Дата рассылки:</strong> {{ object.sending_time }}</p>
+<p><strong>Статус:</strong> {{ object.status }}</p>
+
+<a href="{% url 'mailings:mailing_list' %}">Назад к списку</a>
+{% endblock %}

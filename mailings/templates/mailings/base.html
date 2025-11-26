@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Сервис рассылок{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        header.navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        main {
+            padding-top: 80px;
+            padding-bottom: 40px;
+        }
+        footer {
+            background-color: #fff;
+            border-top: 1px solid #dee2e6;
+            padding: 15px 0;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <!-- Меню -->
+    {% include 'mailings/includes/inc_menu.html' %}
+
+    <!-- Основной контент -->
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Подвал -->
+    <footer>
+        &copy; {% now "Y" %} Сервис рассылок | Разработано в Django
+    </footer>
+
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

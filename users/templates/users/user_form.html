@@ -1,0 +1,15 @@
+{% extends "mailings/base.html" %}
+{% load static %}
+{% block content %}
+<div class="container mt-5" style="max-width: 500px;">
+    <h2 class="mb-4 text-center">Вход</h2>
+    <form method="post" class="card p-4 shadow-sm">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary w-100 mt-3">Войти</button>
+    </form>
+    <div class="text-center mt-3">
+        <a href="{% url 'users:register' %}">Нет аккаунта? Зарегистрируйтесь</a>
+    </div>
+</div>
+{% endblock %}

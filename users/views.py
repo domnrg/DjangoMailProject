@@ -54,20 +54,20 @@ def email_verification(request, token):
 
 User = get_user_model()
 
+
 class UserDetailView(LoginRequiredMixin, DetailView):
     model = User
-    template_name = 'users/profile.html'
+    template_name = "users/profile.html"
 
     def get_object(self, queryset=None):
         return self.request.user
+
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
     model = User
-    fields = ['email', 'avatar', 'phone', 'country']
-    template_name = 'users/profile_edit.html'
-    success_url = reverse_lazy('users:profile')
+    fields = ["email", "avatar", "phone", "country"]
+    template_name = "users/profile_edit.html"
+    success_url = reverse_lazy("users:profile")
 
     def get_object(self, queryset=None):
         return self.request.user
-
-

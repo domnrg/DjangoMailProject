@@ -283,9 +283,22 @@ def user_stats(request):
     }
     return render(request, "users/user_stats.html", context)
 
+
 class MailingSendView(LoginRequiredMixin, View):
     def post(self, request, pk):
         mailing = get_object_or_404(Mailing, pk=pk, owner=request.user)
 
-        call_command('sending_mail')
-        return redirect('mailings:mailing_list')
+        call_command("sending_mail")
+        return redirect("mailings:mailing_list")
+
+
+class AttemptListView(LoginRequiredMixin, ListView):
+    model = Attempt
+    template_name = "mailings/attempt_list.html"
+    context_object_name = "attempts"
+    paginate_by = 20
+
+    def get_queryset(self):
+        return Attempt.objects.filter(mailing__owner=self.request.user).select_related(
+            "mailing"
+        )
